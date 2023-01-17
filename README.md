@@ -21,7 +21,7 @@ Following setup was done with GL-INET MT1300 (beryl) with vanilla OpenWRT v22.03
 
 After saving it, you should see a public IPv6 address being assigned to your WAN6 interface (usually starting with 2400)
 
-*   WAN6 interface also needs to add “Customized Prefix Delegation”, using SSH to login router, edit _**/etc/config/network, a**_dd the line marked in _**Italics**_ under WAN6 interface section, note the 2400:aaaa:bbbb:cccc is your WAN IP prefix (64 bit), this will give the WAN6 interface proper IPv6-PD:
+*   WAN6 interface also needs to add “Customized Prefix Delegation”, using SSH to login router, edit \_**/etc/config/network,** add the line marked in _**Italics**_ under WAN6 interface section, note the 2400:aaaa:bbbb:cccc is your WAN IP prefix (64 bit), this will give the WAN6 interface proper IPv6-PD:
 
 > config interface 'wan6'
 > 
@@ -33,7 +33,7 @@ After saving it, you should see a public IPv6 address being assigned to your WAN
 > 
 >             option reqprefix 'auto'
 > 
->             _**option 2400:aaaa:bbbb:cccc::/64**_
+>             _**option 2400:aaaa:bbbb:cccc::/64**_
 
 Note: Previously I had failed my setup because of missing this step, it wasn't mentioned in most resouces I found on web, and I eventually getting _**MAP rule invalid**_ error.
 
@@ -77,9 +77,6 @@ Testing with my chromebook by visiting the [OCN connectivity verification](https
 When I tested this with a Windows 10 laptop, to my surprise that it was not able to get public IPv6 address from DHCPv6, only the address in ULA prefix (which is from OpenWRT router), this seems to be a known issue and I followed [this page](https://ipv6.web.cern.ch/content/ms-windows-client-doesnt-get-ipv6-address-dhcpv6) to configure my Windows and IPv6 address can be assigned properly.
 
 Final note: PPPoE (IPv4 only) and IPoE (IPv6 with v4 compatibiliy) can coexist, meaning that you can connect ISP ONU to a switch, with one port connecting with IPoE, and the other one with traditional PPPoE. The PPPoE is still useful here in case you need to open server at home, might try later to see if I can add another virtual interface to WAN side for PPPoE dialup.
-
-
-
 
 Reference sites:
 
