@@ -1,4 +1,4 @@
-# **Configure OpenWRT to work with Japan NTT IPv6 (MAP-E) service**
+# **Configuring OpenWRT to work with Japan NTT IPv6 (MAP-E) service**
 
 ISPs with NTT mostly support both IPv4 & IPv6 implementations, while former one usually by using PPPoE which can introduce higher latency, during peak hours it can be also very slow in some busy districts. IPv6 is their newly promoted way to connect to internet which doesn't require PPPoE,  they also claim this is a much faster option, with IPv4 over IPv6 together users should retain traditional IPv4 connectivity. Unfortunately if you subscribe the internet service without using Hikari Denwa (ひかり電話) residential phone service, you will end up getting /64 prefix address as well as without router advertisement (RA), if you don't use vendor provided router it would be extremely difficult to set up your IPv6 network with IPv4 over IPv6 connectivity.
 
@@ -33,7 +33,7 @@ After saving it, you should see a public IPv6 address being assigned to your WAN
 > 
 >             option reqprefix 'auto'
 > 
->  _**option 2400:aaaa:bbbb:cccc::/64**_ 
+>             _**option 2400:aaaa:bbbb:cccc::/64**_ 
 
 Note: Previously I had failed my setup because of missing this step, it wasn't mentioned in most resouces I found on web, and I eventually getting _**MAP rule invalid**_ error.
 
@@ -45,17 +45,17 @@ Note: Previously I had failed my setup because of missing this step, it wasn't m
 
 ![](https://user-images.githubusercontent.com/21307353/212853420-6ce2090f-98f1-4f34-9f44-4db2d3bbddca.png)
 
-*   Next will be setting up MAP-E, create a new interface and name it (e.g. WAN6MAPE), and fill the numbers using above values:
+*   Next will be setting up MAP-E, create a new interface and name it (e.g. WAN6MAPE), and fill the parameters using above generated values:
     *   Protocol: MAP/LW4over6
     *   Type: MAP-E
-    *   BR/DMR/AFTR: \[peeraddr\]
-    *   IPv4 prefix: \[ipaddr\]
-    *   IPv4 prefix length: \[ip4prefixlen\]
-    *   IPv6 prefix: \[ip6prefix\]
-    *   IPv6 prefix length: \[ip6prefixlen\]
-    *   EA-bit length: \[ealen\]
-    *   PSID-bits length: \[psidlen\]
-    *   PSID offset: \[offset\]
+    *   BR/DMR/AFTR: _\[peeraddr\]_
+    *   IPv4 prefix: _\[ipaddr\]_
+    *   IPv4 prefix length: _\[ip4prefixlen\]_
+    *   IPv6 prefix: _\[ip6prefix\]_
+    *   IPv6 prefix length: _\[ip6prefixlen\]_
+    *   EA-bit length: _\[ealen\]_
+    *   PSID-bits length: _\[psidlen\]_
+    *   PSID offset: _\[offset\]_
     *   From advanced settings, make sure it has WAN6 as Tunnel Link, and check the box **Use legacy MAP**:
 
 ![](https://user-images.githubusercontent.com/21307353/212856884-d6d627a4-37b9-4002-99a7-2795dccac2cd.png)
