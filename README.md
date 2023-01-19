@@ -62,6 +62,8 @@ You clients can probably get public IPv6 addresses from router now! But this wil
 
 ![](https://user-images.githubusercontent.com/21307353/212856884-d6d627a4-37b9-4002-99a7-2795dccac2cd.png)
 
+Note: Don't forget to add this WAN6MAPE interface to same firewall zone as WAN/WAN6 since this is also part of WAN.
+
 Eventually you should see the following screen under Network > Interfaces, WAN6MAPE should get the IPv4 exactly the same as using the ISP provided router, there is also a _Virtual dynamic interface_ automatically created when MAP-E interface started correctly.
 
 ![](https://user-images.githubusercontent.com/21307353/212857199-21f283c9-e9e2-43b2-8d58-955126076744.png)
