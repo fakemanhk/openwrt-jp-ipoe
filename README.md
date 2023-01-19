@@ -4,7 +4,7 @@ ISPs with NTT mostly support both IPv4 & IPv6 implementations, while former one 
 
 There exist a few different implementations (DS-LITE/Transix/MAP-E)  in Japan, so not all providers can do the same way, here I am only reference to my own provider **ぷらら (plala),** which is MAP-E implementation.
 
-Following setup was done with GL-INET MT1300 (beryl) with vanilla OpenWRT v22.03 firmware
+The followingFollowig setup was done with GL-INET MT1300 (beryl) and NanoPi R4S (4GB) installing vanilla OpenWRT v22.03 firmware
 
 *   System > Software: Install the required add-on package _**map**_ for MAP-E/MAP-T support, you will need to reboot before you can use it.
 *   Enable WAN6 with **DHCPv6**, firewall setting you probably need to add this to **WAN Zone** (same as IPv4 WAN) for protection.
