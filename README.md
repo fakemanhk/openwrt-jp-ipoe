@@ -82,12 +82,6 @@ Testing with my chromebook by visiting the [OCN connectivity verification](https
 
 ## **SUCCESS!!**
 
-## Futher reading: LAN side DHCPv6 vs SLAAC
-
-When I tested this with a Windows 10 laptop, to my surprise that it was not able to get public IPv6 address from DHCPv6, only the address in ULA prefix (which is from OpenWRT router), this seems to be a known issue and I followed [this page](https://ipv6.web.cern.ch/content/ms-windows-client-doesnt-get-ipv6-address-dhcpv6) to configure my Windows and IPv6 address can be assigned properly with DHCPv6.
-
-The above setup has no issue with Linux/iOS devices as well, however I noticed that Chrome OS and Android devices are not able to get proper IPv6 address, due to the nonexistence support of DHCPv6 ([Decided by Google](https://issuetracker.google.com/issues/36949085), so there is no fix/workaround), if you have any Chrome OS/Android device, you will need to enable SLAAC on LAN interface.
-
 Final note: PPPoE (IPv4 only) and IPoE (IPv6 with v4 compatibiliy) can coexist, meaning that you can connect ISP ONU to a switch, with one port connecting with IPoE, and the other one with traditional PPPoE. The PPPoE is still useful here in case you need to open server at home, might try later to see if I can add another virtual interface to WAN side for PPPoE dialup.
 
 Reference sites:
