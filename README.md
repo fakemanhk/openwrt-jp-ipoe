@@ -1,8 +1,12 @@
 # **Configuring OpenWRT to work with Japan NTT IPv6 (MAP-E) service**
 
+## **The problem:**
+
 ISPs with NTT mostly support both IPv4 & IPv6 implementations, while former one usually by using PPPoE which can introduce higher latency, during peak hours it can be also very slow in some busy districts. IPv6 is their newly promoted way to connect to internet which doesn't require PPPoE,  they also claim this is a much faster option, with IPv4 over IPv6 together users should retain traditional IPv4 connectivity. Unfortunately if you subscribe the internet service without using Hikari Denwa (ひかり電話) residential phone service, you will end up getting /64 prefix address as well as without router advertisement (RA), if you don't use vendor provided router it would be extremely difficult to set up your IPv6 network with IPv4 over IPv6 connectivity.
 
 There exist a few different implementations (DS-LITE/Transix/MAP-E)  in Japan, so not all providers can do the same way, here I am only reference to my own provider **ぷらら (plala),** which is MAP-E implementation.
+
+## **Setup**:
 
 The followingFollowig setup was done with GL-INET MT1300 (beryl) and NanoPi R4S (4GB) installing vanilla OpenWRT v22.03 firmware
 
@@ -78,7 +82,11 @@ Testing with my chromebook by visiting the [OCN connectivity verification](https
 
 ## **SUCCESS!!**
 
-When I tested this with a Windows 10 laptop, to my surprise that it was not able to get public IPv6 address from DHCPv6, only the address in ULA prefix (which is from OpenWRT router), this seems to be a known issue and I followed [this page](https://ipv6.web.cern.ch/content/ms-windows-client-doesnt-get-ipv6-address-dhcpv6) to configure my Windows and IPv6 address can be assigned properly.
+## Futher reading: LAN side DHCPv6 vs SLAAC
+
+When I tested this with a Windows 10 laptop, to my surprise that it was not able to get public IPv6 address from DHCPv6, only the address in ULA prefix (which is from OpenWRT router), this seems to be a known issue and I followed [this page](https://ipv6.web.cern.ch/content/ms-windows-client-doesnt-get-ipv6-address-dhcpv6) to configure my Windows and IPv6 address can be assigned properly with DHCPv6.
+
+The above setup has no issue with Linux/iOS devices as well, however I noticed that Chrome OS and Android devices are not able to get proper IPv6 address, due to the nonexistence support of DHCPv6 ([Decided by Google](https://issuetracker.google.com/issues/36949085), so there is no fix/workaround), if you have any Chrome OS/Android device, you will need to enable SLAAC on LAN interface.
 
 Final note: PPPoE (IPv4 only) and IPoE (IPv6 with v4 compatibiliy) can coexist, meaning that you can connect ISP ONU to a switch, with one port connecting with IPoE, and the other one with traditional PPPoE. The PPPoE is still useful here in case you need to open server at home, might try later to see if I can add another virtual interface to WAN side for PPPoE dialup.
 
