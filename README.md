@@ -23,9 +23,9 @@ The followingFollowig setup was tested with **GL-INET MT1300 (beryl)** and **Nan
 
 ![](https://user-images.githubusercontent.com/21307353/212850790-a2c4ac8b-3bed-4941-8f1a-49e9e5597c3f.png)
 
-Save & Apply setting, you should see a public IPv6 address being assigned to your WAN6 interface (usually starting with 2400)
+Save & Apply setting, you should see a public IPv6 address being assigned to your _WAN6_ interface (usually starting with 2400)
 
-*   WAN6 interface also needs to add _**Customized Prefix Delegation**_, using SSH to login router, edit \_**/etc/config/network,** add the line marked in _**Italics**_ under WAN6 interface section, note the _**2400:aaaa:bbbb:cccc**_ is your WAN IP prefix (first 64 bit), this will give the WAN6 interface proper IPv6-PD:
+*   _WAN6_ interface also needs to add _**Customized Prefix Delegation**_, using SSH to login router, edit **/etc/config/network,** add the line marked in _**Italics**_ under _WAN6_ interface section, note the _**2400:aaaa:bbbb:cccc**_ is your WAN IP prefix (first 64 bit), this will give the WAN6 interface proper IPv6-PD:
 
 > config interface 'wan6'
 > 
@@ -39,7 +39,7 @@ Save & Apply setting, you should see a public IPv6 address being assigned to you
 > 
 >             _**option ip6prefix 2400:aaaa:bbbb:cccc::/64**_
 
-Note: Previously I had failed my setup because of missing this step, it wasn't mentioned in most resouces I found on web, and I eventually getting _**MAP rule invalid**_ error.
+Note: Previously I had failed my setup because of missing this step, it wasn't mentioned in most resources I found on web, and I eventually got a _**MAP rule invalid**_ error.
 
 *   Next, configure LAN interface, under **DHCP Server > IPv6** settings, basically very similar to WAN6 but **Designated master OFF**
 
@@ -51,7 +51,7 @@ You clients can probably get public IPv6 addresses from router now! But this wil
 
 ![](https://user-images.githubusercontent.com/21307353/212853420-6ce2090f-98f1-4f34-9f44-4db2d3bbddca.png)
 
-Note: Before I ran the above calculator, I used the Buffalo router that came with ISP to connect the internet service, logged into that router and from status page I can see that at least the IPv4 address and port numbers are the same as above, so I believe the parameters I get from the calculator should be correct, you might want to do this to make sure things are correct.
+Note: Before I ran the above calculator, I used the Buffalo router that came with ISP to connect the internet service, logged into that router and from status page I can see that at least the IPv4 address and port numbers are the same as above, so I believe the parameters I get from the calculator should be correct, you might want to do this as a verification.
 
 *   Next will be setting up new MAP-E interface, create a new interface and name it (e.g. _WAN6MAPE_), and fill the parameters using above generated parameters:
     *   Protocol: MAP/LW4over6
@@ -89,6 +89,8 @@ Note: Some clients might have issues with DHCPv6, you can refer to the discussio
 Things to follow up later: For most 1G internet package PPPoE (IPv4 only) and IPoE (IPv6 with v4 compatibiliy) can usually coexist (10G plan should have no PPPoE now), meaning that you can connect ISP ONU to a switch, with one port connecting with IPoE, and the other one with traditional PPPoE. The PPPoE is still useful here in case you need to open server at home, might try later to see if I can add another virtual interface to WAN side for PPPoE dialup.
 
 Reference sites:
+
+https://datatracker.ietf.org/doc/html/draft-ietf-softwire-map-03#page-6
 
 [https://www.labohyt.net/blog/lan/post-6760/](https://www.labohyt.net/blog/lan/post-6760/)
 
