@@ -51,6 +51,8 @@ You clients can probably get public IPv6 addresses from router now! But this wil
 
 ![](https://user-images.githubusercontent.com/21307353/212853420-6ce2090f-98f1-4f34-9f44-4db2d3bbddca.png)
 
+Note: Before I ran the above calculator, I used the Buffalo router that came with ISP to connect the internet service, logged into that router and from status page I can see that at least the IPv4 address and port numbers are the same as above, so I believe the parameters I get from the calculator should be correct, you might want to do this to make sure things are correct.
+
 *   Next will be setting up new MAP-E interface, create a new interface and name it (e.g. _WAN6MAPE_), and fill the parameters using above generated parameters:
     *   Protocol: MAP/LW4over6
     *   Type: MAP-E
