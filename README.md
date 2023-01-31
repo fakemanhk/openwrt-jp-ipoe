@@ -37,7 +37,7 @@ Save & Apply setting, you should see a public IPv6 address being assigned to you
 > 
 >             option reqprefix 'auto'
 > 
->             _**option ip6prefix 2400:aaaa:bbbb:cccc::/64**_
+>             _**option ip6prefix '2400:aaaa:bbbb:cccc::/64'**_
 
 Note: Previously I had failed my setup because of missing this step, it wasn't mentioned in most resources I found on web, and I eventually got a _**MAP rule invalid**_ error.
 
