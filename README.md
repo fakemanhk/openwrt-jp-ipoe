@@ -45,7 +45,7 @@ Note: Previously I had failed my setup because of missing this step, it wasn't m
 
 ![](https://user-images.githubusercontent.com/21307353/212852863-7fb85f4e-a04c-4ed6-b936-2b71f2631019.png)
 
-You clients can probably get public IPv6 addresses from router now! But this will be IPv6 access only and you are still missing the IPv4 connectivity, another MAP-E interface is required to fill in the gap.
+You clients can probably get public IPv6 addresses from router now! But this will be IPv6 access only and you are still missing the IPv4 connectivity, another MAP-E interface is required to fill the gap.
 
 *   Before we create the MAP-E interface, the parameter calculation for MAP-E is needed, in reference section I have attached the IETF information but someone has created a page to calculate, you can copy the public IPv6 address from WAN6 interface and use this [online MAP-E rule calculator](http://ipv4.web.fc2.com/map-e.html):
 
