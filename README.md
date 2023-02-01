@@ -1,4 +1,4 @@
-# **Configuring OpenWRT to work with Japan NTT IPv6 (MAP-E) service**
+# **Configuring OpenWrt to work with Japan NTT IPv6 (MAP-E) service**
 
 ## **The problem:**
 
@@ -8,7 +8,7 @@ There exist a few different implementations (DS-LITE/Transix/MAP-E)  in Japan, 
 
 ## **Setup**:
 
-The followingFollowig setup was tested with **GL-INET MT1300 (beryl)** and **NanoPi R4S (4GB)** installing vanilla OpenWRT v22.03 firmware
+The followingFollowig setup was tested with **GL-INET MT1300 (beryl)** and **NanoPi R4S (4GB)** installing vanilla OpenWrt v22.03.3 firmware
 
 *   **System > Software**: Install the required add-on package _**map**_ for MAP-E/MAP-T support, you will need to reboot before you can use it.
 *   Enable WAN6 with **DHCPv6**, firewall setting you probably need to add this to **WAN Zone** (same as IPv4 WAN) for protection.
