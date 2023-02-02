@@ -8,7 +8,7 @@ There exist a few different implementations (DS-LITE/Transix/MAP-E)  in Japan, 
 
 ## **Setup**:
 
-The following setup was tested with **GL-INET MT1300 (beryl)** and verified with **NanoPi R4S (4GB)**, both are installed with vanilla OpenWrt v22.03.3 firmware
+The whole setup was first tested with **GL-INET MT1300 (beryl, v22.03.3)** and verified with **NanoPi R4S (4GB, v22.03.3)** as well as **Linksys WRT3200ACM (rango, v22.03.2)**
 
 *   **System > Software**: Install the required add-on package _**map**_ for MAP-E/MAP-T support, you will need to reboot before you can use it.
 *   Enable WAN6 with **DHCPv6**, firewall setting you probably need to add this to **WAN Zone** (same as IPv4 WAN) for protection.
