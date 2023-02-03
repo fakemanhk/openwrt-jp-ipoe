@@ -84,6 +84,8 @@ Testing with my Linux laptop by visiting the [OCN connectivity verification](htt
 
 ## **SUCCESS!!**
 
+Some speed test [results](https://github.com/fakemanhk/openwrt-jp-ipoe/discussions/4)
+
 Note: Some clients might have issues with DHCPv6, you can refer to the discussion [here](https://github.com/fakemanhk/openwrt-jp-ipoe/discussions/2).
 
 Things to follow up later: For most 1G internet package PPPoE (IPv4 only) and IPoE (IPv6 with v4 compatibiliy) can usually coexist (10G plan should have no PPPoE now), meaning that you can connect ISP ONU to a switch, with one port connecting with IPoE, and the other one with traditional PPPoE. The PPPoE is still useful here in case you need to open server at home, might try later to see if I can add another virtual interface to WAN side for PPPoE dialup.
