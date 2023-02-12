@@ -8,7 +8,7 @@ There exist a few different implementations (DS-LITE/Transix/MAP-E)  in Japan, 
 
 ## **Setup**:
 
-The whole setup was first tested with **GL-INET MT1300 (beryl, v22.03.3)** and verified with **NanoPi R4S (4GB, v22.03.3)** as well as **Linksys WRT3200ACM (rango, v22.03.2)**
+The whole setup was first tested with **GL-INET MT1300 (beryl, v22.03.3)** and verified with **NanoPi R4S (4GB, v22.03.3)** as well as **Linksys WRT3200ACM (rango, v22.03.2)** and **Jetway NF9HG-N2930 (x86, v22.03.3)**.
 
 *   **System > Software**: Install the required add-on package _**map**_ for MAP-E/MAP-T support, you will need to reboot before you can use it.
 *   Enable WAN6 with **DHCPv6**, firewall setting you probably need to add this to **WAN Zone** (same as IPv4 WAN) for protection.
@@ -99,3 +99,7 @@ https://datatracker.ietf.org/doc/html/draft-ietf-softwire-map-03#page-6
 [https://zenn.dev/yakumo/articles/19cbc6309d8143cc9349b2fb0d29771e](https://zenn.dev/yakumo/articles/19cbc6309d8143cc9349b2fb0d29771e)
 
 [https://blog.hinaloe.net/2020/03/14/openwrt-mape-ocn/](https://blog.hinaloe.net/2020/03/14/openwrt-mape-ocn/)
+
+_First draft: 17 Jan 2023_
+
+_Last Edit: 13 Feb 2023_
