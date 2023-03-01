@@ -141,7 +141,11 @@ root@OpenWrt:/lib/netifd/proto# diff -c map.sh map.sh.new
                 [ -z "$zone" ] && zone=$(fw3 -q network $iface 2>/dev/null)
 ```
 
+You can also download the whole file [here](https://github.com/fakemanhk/openwrt-jp-ipoe/blob/main/map.sh.new), don't forget to turn on the execute bit of the file after replacement.
+
 After editing, please restart IPv6 interface, or simply reboot router, you'll see that IPv4 PING is working as well as observing more port groups passing traffic now.
+
+# Others:
 
 Things to follow up later: For most 1G internet package PPPoE (IPv4 only) and IPoE (IPv6 with v4 compatibiliy) can usually coexist (10G plan should have no PPPoE now), meaning that you can connect ISP ONU to a switch, with one port connecting with IPoE, and the other one with traditional PPPoE. The PPPoE is still useful here in case you need to open server at home, might try later to see if I can add another virtual interface to WAN side for PPPoE dialup.
 
