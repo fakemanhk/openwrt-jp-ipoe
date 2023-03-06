@@ -93,49 +93,131 @@ Note: Some clients might have issues with DHCPv6, you can refer to the discussio
 MAP-E with IPv4 sharing from ISP is designed to share same IPv4 address with many customers, with different ports being assigned based on IETF rules, the above linked parameter calculator already shown the assigned ports, usually it's divided into groups of 16 ports, according to [this discussion](https://github.com/fakemanhk/openwrt-jp-ipoe/discussions/10) JPNE assigns 15 groups (240 ports), while OCN/plala assign 63 groups (1008 ports). In most cases this should be enough for most home uses (since only IPv4 connections will use them), however a recent test with well known IPv4 based [website](https://nichiban.co.jp) that uses many sessions showing a significant lagging while loading. After investigation the OpenWrt firewall statistics indicating only first group of assigned ports (i.e. only 16 ports) being used and this is the reason of lagging when a large number of simultaneous IPv4 sessions opening, also IPv4 PING is not working. Not sure if it's because Japan ISP MAP-E configuration has something MAP package can't deal with, as a result a system change is required for _**/lib/netifd/proto/map.sh.**_ Below is the diff of original vs new map.sh:
 
 ```
-root@OpenWrt:/lib/netifd/proto# diff -c map.sh map.sh.new 
-*** map.sh     Thu Feb 23 15:03:03 2023
---- map.sh.new      Fri Feb 24 19:57:14 2023
+root@OpenWrt# diff -c map.sh.old map.sh.new
+*** map.sh.old  Sat Mar  4 03:57:30 2023
+--- map.sh.new     Tue Mar  7 00:09:22 2023
 ***************
-*** 140,145 ****
---- 140,148 ----
+*** 13,18 ****
+--- 13,40 ----
+  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  # GNU General Public License for more details.
+  
++ #------------------------------------
++ #     Modifications by 'cmspam'
++ #------------------------------------
++ # These modifications are made to ensure that the multiple port ranges
++ # used with Japan's MAP-E implementation are actually SNAT-ed to correctly.
++ 
++ #------------------------------------
++ #     Setting to not SNAT to certain ports
++ #------------------------------------
++ # This is a space-delimited list of ports to not SNAT to.
++ # If, for example, you use some ports for servers, it's best to
++ # include them here, so that they are not used with SNAT.
++ # Port ranges are not supported, so please list each port individually
++ # separated with a space.
++ # 
++ # Example, if you want to not SNAT to 2938, 7088, and 10233
++ #
++ #DONT_SNAT_TO="2938 7088 10233"
++ 
++ DONT_SNAT_TO="0"
++ 
++ 
+  [ -n "$INCLUDE_ONLY" ] || {
+        . /lib/functions.sh
+        . /lib/functions/network.sh
+***************
+*** 140,158 ****
               json_add_string snat_ip $(eval "echo \$RULE_${k}_IPV4ADDR")
             json_close_object
           else
-+ local mark=10
-+ nft add table inet nathack
-+ nft add chain inet nathack srcnat {type nat hook postrouting priority 0\; policy accept\; }
             for portset in $(eval "echo \$RULE_${k}_PORTSETS"); do
-                for proto in icmp tcp udp; do
-                json_add_object ""
-***************
-*** 147,158 ****
---- 150,177 ----
-                  json_add_string target SNAT
-                  json_add_string family inet
-                  json_add_string proto "$proto"
-+                 json_add_string mark "$mark/0x0000ff"
-                    json_add_boolean connlimit_ports 1
-                    json_add_string snat_ip $(eval "echo \$RULE_${k}_IPV4ADDR")
-                    json_add_string snat_port "$portset"
-                json_close_object
-                done
-+             nft add rule inet nathack srcnat meta nfproto ipv4 meta l4proto icmp oifname "map-$cfg" meta mark and 0x0000ff ==  $mark counter packets 0 bytes 0 snat ip to $(eval "echo \$RULE_${k}_IPV4ADDR"):$portset
-+ 
-+             mark=`expr $mark + 1`
+!               for proto in icmp tcp udp; do
+!               json_add_object ""
+!                 json_add_string type nat
+!                 json_add_string target SNAT
+!                 json_add_string family inet
+!                 json_add_string proto "$proto"
+!                   json_add_boolean connlimit_ports 1
+!                   json_add_string snat_ip $(eval "echo \$RULE_${k}_IPV4ADDR")
+!                   json_add_string snat_port "$portset"
+!               json_close_object
+!               done
             done
-+ nft add table ip nathack
-+ nft add chain ip nathack PREROUTING { type filter hook prerouting priority 0 \; }
-+ nft add chain ip nathack OUTPUT { type filter hook output priority 0 \; }
-+ local mcount=0
-+ local max=`expr $mark - 10`
-+ mark=10
-+               for portset in $(eval "echo \$RULE_${k}_PORTSETS"); do
-+                       nft add rule ip nathack PREROUTING numgen inc mod $max $mcount counter meta mark set meta mark and 0xffffff00 or $mark
-+                       nft add rule ip nathack OUTPUT numgen inc mod $max $mcount counter meta mark set meta mark and 0xffffff00 or $mark
-+                       mark=`expr $mark + 1`
-+                       mcount=`expr $mcount + 1`
-+               done
+          fi
+          if [ "$maptype" = "map-t" ]; then
+                [ -z "$zone" ] && zone=$(fw3 -q network $iface 2>/dev/null)
+--- 162,233 ----
+              json_add_string snat_ip $(eval "echo \$RULE_${k}_IPV4ADDR")
+            json_close_object
+          else
++ 
++ #------------------------------------
++           #MODIFICATION 1: Get all ports, and full port count.
++           #                Don't include ports in DONT_SNAT_TO
++ #------------------------------------
++           local portcount=0
++           local allports=""
+            for portset in $(eval "echo \$RULE_${k}_PORTSETS"); do
+!               local startport=$(echo $portset | cut -d'-' -f1)
+!               local endport=$(echo $portset | cut -d'-' -f2)
+!               for x in $(seq $startport $endport); do
+!                       if ! echo "$DONT_SNAT_TO" | tr ' ' '\n' | grep -qw $x; then                        
+!                               allports="$allports $portcount : $x , "
+!                               portcount=`expr $portcount + 1`
+!                       fi
+!               done
+            done
++           allports=${allports%??}
++ #------------------------------------
++           #END MODIFICATION 1
++ #------------------------------------
++           
++ #------------------------------------
++             #MODIFICATION 2: Create mape table
++ #------------------------------------
++             nft add table inet mape
++             nft add chain inet mape srcnat {type nat hook postrouting priority 0\; policy accept\; }
++ #------------------------------------
++           #END MODIFICATION 2
++ #------------------------------------
++ 
++ 
++ #------------------------------------
++           #MODIFICATION 3: Create the rules to snat to all the ports
++ #------------------------------------
++           local counter=0
++           
++             for proto in icmp tcp udp; do
++                 nft add rule inet mape srcnat ip protocol $proto oifname "map-$cfg" snat ip to $(eval "echo \$RULE_${k}_IPV4ADDR") : numgen inc mod $portcount map { $allports }
++             done
++           #END MODIFICATION 3
++           
++ #------------------------------------
++           #MODIFICATION 4: Comment out original SNAT implementation.
++ #------------------------------------
++ #            for portset in $(eval "echo \$RULE_${k}_PORTSETS"); do
++ #              for proto in icmp tcp udp; do
++ #                json_add_object ""
++ #                  json_add_string type nat
++ #                  json_add_string target SNAT
++ #                  json_add_string family inet
++ #                  json_add_string proto "$proto"
++ #                  json_add_boolean connlimit_ports 1
++ #                  json_add_string snat_ip $(eval "echo \$RULE_${k}_IPV4ADDR")
++ #                  json_add_string snat_port "$portset"
++ #                json_close_object
++ #              done
++ #            done
++ #------------------------------------
++           #END MODIFICATION 4
++ #-------------------------------------
++ #------------------------------------
++           #ALL MODIFICATIONS FINISHED
++ #------------------------------------
++ 
++ 
           fi
           if [ "$maptype" = "map-t" ]; then
                 [ -z "$zone" ] && zone=$(fw3 -q network $iface 2>/dev/null)
