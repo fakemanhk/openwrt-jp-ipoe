@@ -86,6 +86,8 @@ Testing with my Linux laptop by visiting the [OCN connectivity verification](htt
 
 Some speed test [results](https://github.com/fakemanhk/openwrt-jp-ipoe/discussions/4)
 
+From time to time, you might observe `ip6_tunnel: map-MAPE xmit: Local address not yet configured!` in kernel log, this can be ignored and you don't need to worry about it.
+
 Note: Some clients might have issues with DHCPv6, you can refer to the discussion [here](https://github.com/fakemanhk/openwrt-jp-ipoe/discussions/2).
 
 ## ADVANCED CUSTOM CONFIGURATION
@@ -243,4 +245,4 @@ https://datatracker.ietf.org/doc/html/draft-ietf-softwire-map-03#page-6
 
 _First draft: 17 Jan 2023_
 
-_Last Edit: 01 March 2023_
+_Last Edit: 20 March 2023_
