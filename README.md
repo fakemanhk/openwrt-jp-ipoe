@@ -8,7 +8,10 @@ There exist a few different implementations (DS-LITE/Transix/MAP-E)  in Japan, 
 
 ## **Setup**:
 
-The whole setup was first tested with **GL-INET MT1300 (beryl, v22.03.3)** and verified with **NanoPi R4S (4GB, v22.03.3)** as well as **Linksys WRT3200ACM (rango, v22.03.2)** and **Jetway NF9HG-N2930 (x86, v22.03.3)**.
+The whole setup was first tested with **GL-INET MT1300 (beryl, v22.03.3)** and verified with **NanoPi R4S (4GB, v22.03.3)** as well as **Linksys WRT3200ACM (rango, v22.03.2)** and **Jetway NF9HG-N2930 (x86, v22.03.3)** on 1G plan.
+
+In October 2023 I have verified this setup is also working with **Netgear WAX206 (v23.05.0)** on upgraded 10G plan.
+
 
 *   **System > Software**: Install the required add-on package _**map**_ for MAP-E/MAP-T support, you will need to reboot before you can use it.
 *   Enable WAN6 with **DHCPv6**, firewall setting you probably need to add this to **WAN Zone** (same as IPv4 WAN) for protection.
@@ -45,7 +48,10 @@ Note: Previously I had failed my setup because of missing this step, it wasn't m
 
 ![](https://user-images.githubusercontent.com/21307353/212852863-7fb85f4e-a04c-4ed6-b936-2b71f2631019.png)
 
-You clients can probably get public IPv6 addresses from router now! But this will be IPv6 access only and you are still missing the IPv4 connectivity, another MAP-E interface is required to fill the gap.
+You clients can probably get public IPv6 addresses (*) from router now! But this will be IPv6 access only and you are still missing the IPv4 connectivity, another MAP-E interface is required to fill the gap.
+
+(*) Some clients might not work with DHCPv6, and you'll need SLAAC, please refer to the discussion [here](https://github.com/fakemanhk/openwrt-jp-ipoe/discussions/2) to change the settings.
+
 
 *   Before we create the MAP-E interface, the parameter calculation for MAP-E is needed, in reference section I have attached the IETF information but someone has created a page to calculate, you can copy the public IPv6 address from WAN6 interface and use this [online MAP-E rule calculator](http://ipv4.web.fc2.com/map-e.html):
 
@@ -69,26 +75,6 @@ Note: Before I ran the above calculator, I used the Buffalo router that came wit
 ![](https://user-images.githubusercontent.com/21307353/212856884-d6d627a4-37b9-4002-99a7-2795dccac2cd.png)
 
 Note: Don't forget to add this _WAN6MAPE_ interface to same firewall zone as WAN/WAN6 since this is also part of WAN.
-
-Eventually you should see the following screen under **Network > Interfaces**, _WAN6MAPE_ should get the IPv4 exactly the same as using the ISP provided router, there is also a _**Virtual dynamic interface**_ automatically created when MAP-E interface started correctly.
-
-![](https://user-images.githubusercontent.com/21307353/212857199-21f283c9-e9e2-43b2-8d58-955126076744.png)
-
-From **Status > Overview** you'll see both **IPv4 Upstream** and **IPv6 Upstream** information:
-
-![](https://user-images.githubusercontent.com/21307353/212858791-e21a621e-0a5a-40a9-952f-ec9d759b6a9e.png)
-
-Testing with my Linux laptop by visiting the [OCN connectivity verification](https://v6test.ocn.ne.jp/) page, both IPv4/IPv6 addresses should be the same as above upstream informations:
-
-![](https://user-images.githubusercontent.com/21307353/212859123-0590650f-29f1-412c-99a7-19d5516a8d22.png)
-
-## **SUCCESS!!**
-
-Some speed test [results](https://github.com/fakemanhk/openwrt-jp-ipoe/discussions/4)
-
-From time to time, you might observe `ip6_tunnel: map-MAPE xmit: Local address not yet configured!` in kernel log, this can be ignored and you don't need to worry about it.
-
-Note: Some clients might have issues with DHCPv6, you can refer to the discussion [here](https://github.com/fakemanhk/openwrt-jp-ipoe/discussions/2).
 
 ## ADVANCED CUSTOM CONFIGURATION
 
@@ -225,15 +211,30 @@ root@OpenWrt# diff -c map.sh.old map.sh.new
                 [ -z "$zone" ] && zone=$(fw3 -q network $iface 2>/dev/null)
 ```
 
-You can also download the whole file [here](https://github.com/fakemanhk/openwrt-jp-ipoe/blob/main/map.sh.new), don't forget to turn on the execute bit of the file after replacement.
+You can also download the whole file [here](https://github.com/fakemanhk/openwrt-jp-ipoe/blob/main/map.sh.new), _**don't forget to turn on the execute bit**_ of the file after replacement.
 
 After editing, please restart IPv6 interface, or simply reboot router, you'll see that IPv4 PING is working as well as observing more port groups passing traffic now.
 
-# Others:
+Eventually you should see the following screen under **Network > Interfaces**, _WAN6MAPE_ should get the IPv4 exactly the same as using the ISP provided router, there is also a _**Virtual dynamic interface**_ automatically created when MAP-E interface started correctly.
 
-Things to follow up later: For most 1G internet package PPPoE (IPv4 only) and IPoE (IPv6 with v4 compatibiliy) can usually coexist (10G plan should have no PPPoE now), meaning that you can connect ISP ONU to a switch, with one port connecting with IPoE, and the other one with traditional PPPoE. The PPPoE is still useful here in case you need to open server at home, might try later to see if I can add another virtual interface to WAN side for PPPoE dialup.
+![](https://user-images.githubusercontent.com/21307353/212857199-21f283c9-e9e2-43b2-8d58-955126076744.png)
 
-Reference sites:
+From **Status > Overview** you'll see both **IPv4 Upstream** and **IPv6 Upstream** information:
+
+![](https://user-images.githubusercontent.com/21307353/212858791-e21a621e-0a5a-40a9-952f-ec9d759b6a9e.png)
+
+Testing with my Linux laptop by visiting the [OCN connectivity verification](https://v6test.ocn.ne.jp/) page, both IPv4/IPv6 addresses should be the same as above upstream informations:
+
+![](https://user-images.githubusercontent.com/21307353/212859123-0590650f-29f1-412c-99a7-19d5516a8d22.png)
+
+## **SUCCESS!!**
+
+Some speed test [results](https://github.com/fakemanhk/openwrt-jp-ipoe/discussions/4)
+
+From time to time, you might observe `ip6_tunnel: map-MAPE xmit: Local address not yet configured!` in kernel log, this can be ignored and you don't need to worry about it.
+
+
+### Reference materials:
 
 https://datatracker.ietf.org/doc/html/draft-ietf-softwire-map-03#page-6
 
@@ -245,4 +246,4 @@ https://datatracker.ietf.org/doc/html/draft-ietf-softwire-map-03#page-6
 
 _First draft: 17 Jan 2023_
 
-_Last Edit: 20 March 2023_
+_Last Edit: 30 October 2023_
