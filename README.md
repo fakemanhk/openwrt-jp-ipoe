@@ -12,6 +12,8 @@ The whole setup was first tested with **GL-INET MT1300 (beryl, v22.03.3)** and v
 
 In October 2023 I have verified this setup is also working with **Netgear WAX206 (v23.05.0)** on upgraded 10G plan.
 
+Note: I didn't notice that my upgraded 10G plan is slightly different from the original 1G plan, the old one comes with /64 prefix without prefix delegation (PD), while ***the 10G plan already give you /56 prefix with PD even you don't pay for the Hikari phone service!*** Here is a [discussion](https://github.com/fakemanhk/openwrt-jp-ipoe/discussions/27) about it.
+
 
 *   **System > Software**: Install the required add-on package _**map**_ for MAP-E/MAP-T support, you will need to reboot before you can use it.
 *   Enable WAN6 with **DHCPv6**, firewall setting you probably need to add this to **WAN Zone** (same as IPv4 WAN) for protection.
@@ -28,7 +30,9 @@ In October 2023 I have verified this setup is also working with **Netgear WAX206
 
 Save & Apply setting, you should see a public IPv6 address being assigned to your _WAN6_ interface (usually starting with 2400)
 
-*   _WAN6_ interface also needs to add _**Customized Prefix Delegation**_, using SSH to login router, edit **/etc/config/network,** add the line marked in _**Italics**_ under _WAN6_ interface section, note the _**2400:aaaa:bbbb:cccc**_ is your WAN IP prefix (first 64 bit), this will give the WAN6 interface proper IPv6-PD:
+*   _WAN6_ interface also needs to add _**Routed Prefix Information**_ due to missing RA on WAN6 side (note: If your service plan comes with prefix delegation, like having Hikari phone service, or using some of the 10G internet plan, it could be coming with a shorter prefix like /60 or /56 together with PD, then this step can be ommited):
+
+   * Use SSH to login router, edit **/etc/config/network,** add the line marked in _**Italics**_ under _WAN6_ interface section, note the _**2400:aaaa:bbbb:cccc**_ is your WAN IP prefix (first 64 bit), this will give the WAN6 interface proper IPv6-PD:
 
 > config interface 'wan6'
 > 
@@ -221,6 +225,8 @@ Eventually you should see the following screen under **Network > Interfaces**, _
 
 From **Status > Overview** you'll see both **IPv4 Upstream** and **IPv6 Upstream** information:
 
+_(Note: If your plan comes with prefix delegation, your IPv6 Upstream might not show you any address, only a prefix will be shown, this is NORMAL)_
+
 ![](https://user-images.githubusercontent.com/21307353/212858791-e21a621e-0a5a-40a9-952f-ec9d759b6a9e.png)
 
 Testing with my Linux laptop by visiting the [OCN connectivity verification](https://v6test.ocn.ne.jp/) page, both IPv4/IPv6 addresses should be the same as above upstream informations:
@@ -246,4 +252,4 @@ https://datatracker.ietf.org/doc/html/draft-ietf-softwire-map-03#page-6
 
 _First draft: 17 Jan 2023_
 
-_Last Edit: 30 October 2023_
+_Last Edit: 07 Feb 2024_
